@@ -42,11 +42,13 @@ public class ShellOutputStreamThread<T> extends Thread {
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (this) {
+            while (true) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
