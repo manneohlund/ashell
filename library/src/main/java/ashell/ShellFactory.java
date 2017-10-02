@@ -22,14 +22,20 @@ import ashell.workers.ShellReader;
 
 public class ShellFactory {
 
+    private boolean isRoot = false;
     private AShell shell;
 
-    private ShellFactory(AShell shell) {
+    public ShellFactory(AShell shell, boolean isRoot) {
         this.shell = shell;
+        this.isRoot = isRoot;
     }
 
     public AShell getShell() {
         return shell;
+    }
+
+    public boolean isRoot() {
+        return isRoot;
     }
 
     @SuppressWarnings("unchecked") // Single-interface proxy creation guarded by parameter safety.
@@ -97,12 +103,13 @@ public class ShellFactory {
         }
 
         public ShellFactory build(boolean runAsSuperuser) throws IOException {
-
+            boolean isRoot = false;
             if (processBuilder == null) {
                 processBuilder = ProcessUtils.getDefaultProcessBuilder("sh");
                 if (runAsSuperuser) {
                     try {
                         processBuilder = ProcessUtils.getDefaultProcessBuilder("su");
+                        isRoot = true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -134,7 +141,7 @@ public class ShellFactory {
 
             shell.start();
 
-            return new ShellFactory(shell);
+            return new ShellFactory(shell, isRoot);
         }
     }
 }
