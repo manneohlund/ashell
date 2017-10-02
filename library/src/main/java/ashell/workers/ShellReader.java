@@ -33,9 +33,9 @@ public class ShellReader extends ShellInputStreamThread<String> {
         String line = "";
         try {
             while ((line = reader.readLine()) != null) {
-                if (onShellResultListener != null && line != null && line.length() != 0) {
+                if (getOnShellResultListener() != null && line.length() != 0) {
                     //Log.e(this.getName(), "READER: " + line); // TODO: 03/04/17 Remove this?
-                    if (!onShellResultListener.onShellResult(line)) {
+                    if (!getOnShellResultListener().onShellResult(line)) {
                         //Log.e(this.getName(), "READER: " + line); // TODO: 03/04/17 Remove this?
                         if (line.equals(CMD_DONE)) {
                             setBusy(false);
@@ -57,8 +57,8 @@ public class ShellReader extends ShellInputStreamThread<String> {
                 e.printStackTrace();
             }
         }
-        if (notErrorListener && onShellResultListener != null) {
-            onShellResultListener.onShellResult("SHELL_EXIT");
+        if (notErrorListener && getOnShellResultListener() != null) {
+            getOnShellResultListener().onShellResult("SHELL_EXIT");
             onShellStateListener.onShellStateChanged(OnShellStateListener.State.TERMINATED);
         }
     }
