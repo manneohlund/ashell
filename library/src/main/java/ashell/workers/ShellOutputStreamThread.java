@@ -12,23 +12,6 @@ import ashell.utils.StringUtils;
  * Copyright © 2017 All rights reserved.
  */
 
-/** todo old code, can be removed
-    DataOutputStream writer;
-    public void exec(List<String> commands) {
-        onShellStateChanged(State.BUSY);
-        if (writer == null) {
-            writer = new DataOutputStream(process.getOutputStream());
-        }
-        try {
-            writer.writeBytes(new String(StringUtils.listToString(commands).getBytes(Charset.forName("UTF-8"))));
-            writer.writeBytes("\n");
-            writer.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
 public class ShellOutputStreamThread<T> extends Thread {
     private Process process;
     private OutputStream outputStream;
@@ -42,13 +25,11 @@ public class ShellOutputStreamThread<T> extends Thread {
 
     @Override
     public void run() {
-        synchronized (this) {
-            while (true) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        while (true) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
